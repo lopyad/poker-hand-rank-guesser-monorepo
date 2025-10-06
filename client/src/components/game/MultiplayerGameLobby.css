@@ -30,7 +30,9 @@
 }
 
 .lobby-info {
+  margin-top: 20px;
   text-align: center;
+  min-height: 2em;
 }
 
 .ready-toggle-button {
@@ -51,26 +53,27 @@
   border-color: #4CAF50;
 }
 
-.start-game-button {
+/* New button for the main lobby ready toggle */
+.lobby-ready-button {
   margin-top: 20px;
   padding: 15px 40px;
   font-size: 1.5em;
   font-weight: bold;
   color: white;
-  background-color: #4CAF50; /* Green */
+  background-color: #d9534f; /* Red for 'Not Ready' */
   border: none;
   border-radius: 10px;
   cursor: pointer;
   transition: background-color 0.3s ease, transform 0.2s ease;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  min-width: 250px;
 }
 
-.start-game-button:hover {
-  background-color: #45a049;
+.lobby-ready-button:hover {
   transform: translateY(-3px);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.25);
 }
 
-.start-game-button:active {
-  transform: translateY(0);
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+.lobby-ready-button.ready {
+  background-color: #4CAF50; /* Green for 'Ready' */
 }

@@ -35,6 +35,9 @@ const MultiplayerGameLobby: React.FC<MultiplayerGameLobbyProps> = ({
   const { isCountdownRunning, countdown } = useMultiGameStore();
   const [displayCountdown, setDisplayCountdown] = useState(0);
 
+  const currentPlayer = players.find(p => p.name === userName);
+  const isCurrentUserReady = !!currentPlayer?.isReady;
+
   useEffect(() => {
     let timer: number;
 
@@ -113,8 +116,11 @@ const MultiplayerGameLobby: React.FC<MultiplayerGameLobbyProps> = ({
           <p>Players will wait here before the game starts.</p>
         )}
       </div>
-      <button onClick={() => setPhase('game')} className="start-game-button">
-        Start Game (Dev)
+      <button 
+        onClick={() => onPlayerReadyToggle(!isCurrentUserReady)} 
+        className={`lobby-ready-button ${isCurrentUserReady ? 'ready' : ''}`}
+      >
+        {isCurrentUserReady ? 'Ready' : 'Not Ready'}
       </button>
     </div>
   );

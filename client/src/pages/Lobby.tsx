@@ -19,7 +19,7 @@ const Lobby: React.FC = () => {
   }, []);
 
   const handleStartGame = () => {
-    navigate('/login');
+    navigate('/setup');
   };
 
   return (
@@ -31,7 +31,7 @@ const Lobby: React.FC = () => {
         ))}
       </div>
       <button className="start-button" onClick={handleStartGame}>
-        게임 시작
+        Game Start
       </button>
     </div>
   );
