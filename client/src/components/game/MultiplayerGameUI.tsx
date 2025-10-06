@@ -124,8 +124,6 @@ const PlayerSection: React.FC<PlayerSectionProps> = ({ player, scores, isCurrent
           <>
             <div className="card-component back-card"></div>
             <div className="card-component back-card"></div>
-            <div className="card-component back-card"></div>
-            <div className="card-component back-card"></div>
           </>
         )}
       </div>

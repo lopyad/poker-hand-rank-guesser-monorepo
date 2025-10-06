@@ -12,7 +12,10 @@ export default defineConfig({
         changeOrigin: true, 
         // rewrite: (path) => path.replace(/^\/api/, ''), 
       }
-    }
+    },
+    allowedHosts: [
+      "nonindexed-unprophetically-alysia.ngrok-free.dev"
+    ]
   },
   build: {
     outDir: path.resolve(__dirname, '../server/public'),

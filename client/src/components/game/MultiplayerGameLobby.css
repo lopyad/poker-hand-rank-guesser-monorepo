@@ -77,3 +77,24 @@
 .lobby-ready-button.ready {
   background-color: #4CAF50; /* Green for 'Ready' */
 }
+
+.ai-fill-notice {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 15px;
+  margin: 10px auto; /* Use auto margin for robust horizontal centering */
+  background-color: #fffbe6; /* Light yellow */
+  border: 1px solid #ffe58f; /* Yellow border */
+  border-radius: 8px;
+  color: #614700;
+  font-weight: bold;
+  text-align: center;
+  width: 80%;
+  max-width: 600px;
+}
+
+.ai-fill-notice p {
+  margin: 5px 0;
+}

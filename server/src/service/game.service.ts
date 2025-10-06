@@ -82,7 +82,7 @@ class GameManager {
     ws.roomCode = roomCode;
 
     const initialGameData: PlayerGameData = { holeCards: [], score: 0, guess: 0 };
-    room.players.set(ws.userId, { ws, isReady: false, name: user.name, gameData: initialGameData });
+    room.players.set(ws.userId, { ws, isReady: false, name: user.name, isAI: false, gameData: initialGameData });
     console.log(`Player ${ws.userId} joined room ${roomCode}.`);
 
     // Cancel countdown if a new player joins
@@ -91,6 +91,7 @@ class GameManager {
     const playersPayload = Array.from(room.players.values()).map(player => ({
       name: player.name,
       isReady: player.isReady,
+      isAI: player.isAI,
     }));
 
     const response: S2C_Message = {
@@ -121,6 +122,7 @@ class GameManager {
     const playersPayload = Array.from(room.players.values()).map(ps => ({
       name: ps.name,
       isReady: ps.isReady,
+      isAI: ps.isAI,
     }));
 
     const response: S2C_Message = {
@@ -142,7 +144,10 @@ class GameManager {
     const room = this.rooms.get(roomCode);
     if (!room) return;
 
-    const allPlayersReady = room.players.size > 0 && Array.from(room.players.values()).every(p => p.isReady);
+    const humanPlayers = Array.from(room.players.values()).filter(p => !p.isAI);
+    if (humanPlayers.length === 0) return;
+
+    const allPlayersReady = humanPlayers.every(p => p.isReady);
 
     if ((!allPlayersReady || forceCancel) && room.state === 'countdown') {
       // Cancel countdown
@@ -151,12 +156,43 @@ class GameManager {
         clearTimeout(timer);
         this.countdowns.delete(roomCode);
         room.state = 'lobby';
+
+        // Broadcast the actual lobby state to remove the "illusion" of AI players
+        const playersPayload = Array.from(room.players.values()).map(p => ({
+            name: p.name,
+            isReady: p.isReady,
+            isAI: p.isAI,
+        }));
+        this.broadcastToRoom(roomCode, { type: "LOBBY_STATE", payload: { players: playersPayload } });
+        
         this.broadcastToRoom(roomCode, { type: 'GAME_START_CANCELLED', payload: {} });
         console.log(`Countdown cancelled for room ${roomCode}.`);
       }
     } else if (allPlayersReady && room.state === 'lobby') {
       // Start countdown
       room.state = 'countdown';
+
+      // Create a temporary payload for the "illusion"
+      const tempPlayersPayload = Array.from(room.players.values()).map(p => ({
+          name: p.name,
+          isReady: p.isReady,
+          isAI: p.isAI,
+      }));
+
+      if (tempPlayersPayload.length < 4) {
+          const aIsToAdd = 4 - tempPlayersPayload.length;
+          for (let i = 0; i < aIsToAdd; i++) {
+              tempPlayersPayload.push({
+                  name: `AI Player ${i + 1}`,
+                  isReady: true,
+                  isAI: true
+              });
+          }
+      }
+
+      // Broadcast the temporary lobby state with fake AI players
+      this.broadcastToRoom(roomCode, { type: "LOBBY_STATE", payload: { players: tempPlayersPayload } });
+
       const countdownDuration = 5; // 5 seconds
       this.broadcastToRoom(roomCode, { type: 'GAME_START_COUNTDOWN', payload: { duration: countdownDuration } });
       console.log(`Countdown started for room ${roomCode}.`);
@@ -191,6 +227,7 @@ class GameManager {
     const playersPayload = Array.from(room.players.values()).map(ps => ({
       name: ps.name,
       isReady: ps.isReady,
+      isAI: ps.isAI,
     }));
 
     this.broadcastToRoom(roomCode, {
@@ -200,10 +237,11 @@ class GameManager {
       },
     });
 
-    const allPlayersReadyForNextRound = Array.from(room.players.values()).every(p => p.isReady);
+    const humanPlayers = Array.from(room.players.values()).filter(p => !p.isAI);
+    const allHumansReadyForNextRound = humanPlayers.every(p => p.isReady);
 
-    if (allPlayersReadyForNextRound) {
-      console.log(`All players in room ${roomCode} are ready for the next round. Starting new round.`);
+    if (allHumansReadyForNextRound) {
+      console.log(`All human players in room ${roomCode} are ready for the next round. Starting new round.`);
       this._startGame(roomCode);
     }
 
@@ -241,53 +279,63 @@ class GameManager {
     const room = this.rooms.get(roomCode);
     if (!room) return;
 
+    // ACTUALLY add AI players to the server state now
+    const playerCcount = Array.from(room.players.values()).length;
+    if (playerCcount < 4) {
+        const aIsToAdd = 4 - playerCcount;
+        for (let i = 0; i < aIsToAdd; i++) {
+            const aiId = `ai-${Date.now()}-${i}`;
+            const aiName = `AI Player ${i + 1}`;
+            const aiPlayerState: PlayerState = {
+                ws: { send: () => {} } as any,
+                isReady: true,
+                name: aiName,
+                isAI: true,
+                gameData: { holeCards: [], score: 0, guess: 0 }
+            };
+            room.players.set(aiId, aiPlayerState);
+            console.log(`Added ${aiName} to room ${roomCode}.`);
+        }
+    }
+
     console.log(`Starting game in room ${roomCode}.`);
-    room.state = 'in-game'; // Transition to in-game state
+    room.state = 'in-game';
 
-    // 1. Create and shuffle deck
     room.deck = shuffleDeck(createDeck());
-
-    // 2. Deal community cards
     room.communityCards = dealCards(room.deck, 5);
 
-    // 3. Deal hole cards and evaluate hands for each player
     room.players.forEach(player => {
-      player.gameData.holeCards = dealCards(room.deck, 4);
+      player.gameData.holeCards = dealCards(room.deck, 2); // Deal 2 cards as requested
       player.gameData.evaluatedHand = evaluatePlayerHand(player.gameData.holeCards, room.communityCards);
 
-      // Send private hole cards and community cards to each player
-      player.ws.send(JSON.stringify({
-        type: 'ROUND_START',
-        payload: {
-          holeCards: player.gameData.holeCards,
-          communityCards: room.communityCards,
-          playerName: player.name,
-        },
-      } as S2C_Message));
+      if (player.isAI) {
+        const aiGuess = Math.floor(Math.random() * 4) + 1;
+        player.gameData.guess = aiGuess;
+        console.log(`AI Player ${player.name} submitted guess: ${aiGuess}`);
+      } else {
+        player.ws.send(JSON.stringify({
+          type: 'ROUND_START',
+          payload: {
+            holeCards: player.gameData.holeCards,
+            communityCards: room.communityCards,
+            playerName: player.name,
+          },
+        } as S2C_Message));
+      }
     });
 
-    room.state = 'guessing'; // Transition to guessing state
+    room.state = 'guessing';
     console.log(`Room ${roomCode} is now in guessing phase.`);
 
-    // // Set a timeout for guessing phase (e.g., 30 seconds), then show results
-    // const guessingTimeout = 300; // seconds
-    // const timeoutId = setTimeout(() => {
-    //     console.log(`Guessing timeout for room ${roomCode}. Showing results.`);
-    //     this._showResults(roomCode);
-    // }, guessingTimeout * 1000);
-    // this.gameRoundTimeouts.set(roomCode, timeoutId);
+    const allGuessed = Array.from(room.players.values()).every(p => p.gameData.guess !== 0);
+    if (allGuessed) {
+      this._showResults(roomCode);
+    }
   }
 
   private _showResults(roomCode: string) {
     const room = this.rooms.get(roomCode);
     if (!room) return;
-
-    // // Clear any active guessing timeout
-    // const timeoutId = this.gameRoundTimeouts.get(roomCode);
-    // if (timeoutId) {
-    //     clearTimeout(timeoutId);
-    //     this.gameRoundTimeouts.delete(roomCode);
-    // }
 
     console.log(`Showing results for room ${roomCode}.`);
     room.state = 'results';
@@ -337,13 +385,16 @@ class GameManager {
     this.broadcastToRoom(roomCode, { type: 'ROUND_RESULT', payload: { results: resultsPayload } });
 
     // 4. Transition to waiting for next round ready state
-    const resultsDisplayDuration = 5; // seconds
+    const resultsDisplayDuration = 0; // seconds
     const timeoutId2 = setTimeout(() => {
         room.state = 'waiting-for-next-round-ready';
         // Reset player game data and ready status for the next round
         room.players.forEach(playerState => {
-            playerState.isReady = false; // Players need to ready up again for the next round
-            // holeCards and evaluatedHand are re-initialized in _startGame, so no need to reset here.
+            if (playerState.isAI) {
+                playerState.isReady = true; // AI is always ready
+            } else {
+                playerState.isReady = false; // Humans need to ready up again
+            }
             playerState.gameData.guess = 0; // Reset guess to 0, indicating no guess made
         });
 
@@ -351,6 +402,7 @@ class GameManager {
         const playersPayload = Array.from(room.players.values()).map(ps => ({
             name: ps.name,
             isReady: ps.isReady,
+            isAI: ps.isAI,
         }));
         this.broadcastToRoom(roomCode, { type: "LOBBY_STATE", payload: { players: playersPayload } });
         console.log(`Room ${roomCode} transitioned to waiting for next round ready.`);
@@ -360,37 +412,40 @@ class GameManager {
 
   public leaveRoom(roomCode: string, playerId: string): void {
     const room = this.rooms.get(roomCode);
-    if (room) {
-      room.players.delete(playerId);
-      console.log(`Player ${playerId} left room ${roomCode}.`);
+    if (!room) {
+      return;
+    }
+     
+    room.players.delete(playerId);
+    console.log(`Player ${playerId} left room ${roomCode}.`);
 
-      // Clear any game round timeout if player leaves during guessing/results
-      const gameTimeoutId = this.gameRoundTimeouts.get(roomCode);
-      if (gameTimeoutId) {
-          clearTimeout(gameTimeoutId);
-          this.gameRoundTimeouts.delete(roomCode);
-      }
+    // Clear any game round timeout if player leaves during guessing/results
+    const gameTimeoutId = this.gameRoundTimeouts.get(roomCode);
+    if (gameTimeoutId) {
+        clearTimeout(gameTimeoutId);
+        this.gameRoundTimeouts.delete(roomCode);
+    }
 
-      if (room.players.size === 0) {
-        const timer = this.countdowns.get(roomCode);
-        if (timer) {
-            clearTimeout(timer);
-            this.countdowns.delete(roomCode);
-        }
-        this.rooms.delete(roomCode);
-        console.log(`Room ${roomCode} is empty and has been removed.`);
-      } else {
-        // If players remain, check countdown condition and update lobby
-        // Force cancel any ongoing countdown or game phase
-        this._handleGameStartCondition(roomCode, true); 
-        
-        // Broadcast updated lobby state to reflect player leaving
-        const playersPayload = Array.from(room.players.values()).map(ps => ({
-            name: ps.name,
-            isReady: ps.isReady,
-        }));
-        this.broadcastToRoom(roomCode, { type: "LOBBY_STATE", payload: { players: playersPayload } });
+    if (room.players.size === 0) {
+      const timer = this.countdowns.get(roomCode);
+      if (timer) {
+          clearTimeout(timer);
+          this.countdowns.delete(roomCode);
       }
+      this.rooms.delete(roomCode);
+      console.log(`Room ${roomCode} is empty and has been removed.`);
+    } else {
+      // If players remain, check countdown condition and update lobby
+      // Force cancel any ongoing countdown or game phase
+      this._handleGameStartCondition(roomCode, true); 
+      
+      // Broadcast updated lobby state to reflect player leaving
+      const playersPayload = Array.from(room.players.values()).map(ps => ({
+          name: ps.name,
+          isReady: ps.isReady,
+          isAI: ps.isAI,
+      }));
+      this.broadcastToRoom(roomCode, { type: "LOBBY_STATE", payload: { players: playersPayload } });
     }
   }
 

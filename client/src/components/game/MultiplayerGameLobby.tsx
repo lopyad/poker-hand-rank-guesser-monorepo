@@ -111,8 +111,19 @@ const MultiplayerGameLobby: React.FC<MultiplayerGameLobbyProps> = ({
       </div>
       <div className="lobby-info">
         {isCountdownRunning && displayCountdown > 0 ? (
-          <p>Game starting in {displayCountdown} seconds...</p>
+          // When countdown is running, decide which message to show
+          players.length < 4 ? (
+            <div className="ai-fill-notice">
+              <p>All players are ready.</p>
+              <p>
+                The game will start in {displayCountdown} seconds. Empty slots will be filled by AI players.
+              </p>
+            </div>
+          ) : (
+            <p>Game starting in {displayCountdown} seconds...</p>
+          )
         ) : (
+          // When no countdown, show the default message
           <p>Players will wait here before the game starts.</p>
         )}
       </div>

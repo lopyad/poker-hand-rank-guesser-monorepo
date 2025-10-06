@@ -57,6 +57,7 @@ export type PlayerState = {
   ws: WebSocket;
   isReady: boolean;
   name: string;
+  isAI: boolean;
   gameData: PlayerGameData;
 };
 
@@ -137,6 +138,7 @@ export interface S2C_LobbyState {
     players: {
       name: string;
       isReady: boolean;
+      isAI: boolean;
     }[];
   };
 }
