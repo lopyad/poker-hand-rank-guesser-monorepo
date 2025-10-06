@@ -1,0 +1,121 @@
+.multigame-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 20px;
+}
+
+.room-code-container {
+  margin: 15px 0;
+  padding: 10px 20px;
+  background-color: #e9e9e9;
+  border-radius: 8px;
+  border: 2px dashed #ccc;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap; /* Allow items to wrap on smaller screens */
+  justify-content: center; /* Center items horizontally */
+}
+
+.room-code-container p {
+  margin: 0;
+  font-size: 1.2em;
+  color: #555;
+}
+
+.room-code {
+  font-weight: bold;
+  color: #000;
+  letter-spacing: 2px;
+}
+
+.get-room-code-button,
+.join-room-button {
+  padding: 8px 15px;
+  font-size: 0.9em;
+  font-weight: bold;
+  color: white;
+  background-color: #007bff; /* Blue button */
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.get-room-code-button:hover,
+.join-room-button:hover {
+  background-color: #0056b3;
+}
+
+.room-code-input {
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  font-size: 1em;
+  width: 120px; /* Adjust width as needed */
+}
+
+/* Prediction controls and buttons */
+.prediction-controls {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 20px; /* Space between buttons and actions */
+  margin-bottom: 10px; /* Reduced margin for closer placement */
+}
+
+.prediction-buttons {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+.prediction-buttons span {
+  font-size: 1.1em;
+  font-weight: bold;
+  color: #555;
+}
+
+.prediction-button {
+  padding: 8px 15px;
+  font-size: 1em;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  background-color: #f0f0f0;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.prediction-button:hover {
+  background-color: #e0e0e0;
+  border-color: #999;
+}
+
+.prediction-button.selected {
+  background-color: #1877f2; /* Blue for selected */
+  color: white;
+  border-color: #1877f2;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+}
+
+.prediction-button.selected:hover {
+  background-color: #166fe5;
+  border-color: #166fe5;
+}
+
+/* General game button style */
+.game-button {
+  padding: 12px 25px;
+  font-size: 1.2em;
+  cursor: pointer;
+  border: none;
+  border-radius: 6px;
+  background-color: #1877f2;
+  color: white;
+  transition: background-color 0.3s;
+}
+
+.game-button:hover {
+  background-color: #166fe5;
+}

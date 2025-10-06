@@ -1,0 +1,288 @@
+.app {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  background: white;
+  border-radius: 8px;
+  padding: 20px;
+  box-sizing: border-box; /* Include padding in element's total width and height */
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+
+header {
+  text-align: center;
+  padding-bottom: 10px; /* Reduced padding */
+  margin-bottom: 10px; /* Reduced margin */
+}
+
+header h1 {
+  margin: 0;
+  font-size: 1.5em; /* Smaller title */
+  color: #000000;
+}
+
+.scores {
+  margin-top: 5px; /* Reduced margin */
+  font-size: 1em;
+  color: #555;
+}
+
+.scores span {
+  margin: 0 8px;
+}
+
+main {
+  flex: 1; /* Main content takes available space */
+  display: flex;
+  flex-direction: column;
+  justify-content: center; /* Center community cards vertically */
+  align-items: center; /* Center community cards horizontally */
+}
+
+.community-cards-area {
+  margin-bottom: 40px; /* Increased margin for spacing */
+  text-align: center;
+  flex: 1; /* Make it take up available space */
+  display: flex; /* Make it a flex container */
+  flex-direction: column; /* Stack children vertically */
+  justify-content: center; /* Center content vertically */
+  align-items: center; /* Center content horizontally */
+}
+
+.community-cards-area h2 {
+  font-size: 1.5em;
+  color: #1877f2;
+  margin-bottom: 15px;
+}
+
+.community-cards-area .card-list .card-component {
+  transform: scale(2.0); /* Make community cards larger */
+  margin: 0 40px; /* Increased margin for spacing */
+}
+
+.players-area {
+  display: flex; /* Revert to flex for horizontal arrangement */
+  justify-content: space-around; /* Evenly space players horizontally */
+  align-items: flex-end; /* Align players to the bottom */
+  flex-wrap: wrap; /* Allow wrapping on smaller screens */
+  margin-top: auto; /* Push players-area to the bottom */
+  /* padding-top: 20px;  */
+  width: 100%; /* Ensure it takes full width */
+  max-width: 1200px; /* Allow full width */
+}
+
+.player {
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  padding: 10px;
+  padding-top: 5px;
+  text-align: center;
+  background-color: #fafafa;
+  transition: all 0.3s ease;
+  flex: 1; /* Allow players to grow and shrink */
+  min-width: 180px; /* Minimum width for player card */
+  max-width: 22%; /* Max width to allow 4 players in a row */
+  margin: 10px; /* Spacing between players */
+  display: flex; /* Make player a flex container */
+  flex-direction: column; /* Stack children vertically */
+  align-items: center; /* Center children horizontally */
+}
+
+.player h3 {
+  margin-top: 5px;
+  margin-bottom: 5px; /* Reduced bottom margin for h3 */
+}
+
+.player-score {
+  font-size: 1.1em;
+  font-weight: bold;
+  color: #333;
+  margin-bottom: 10px; /* Space below score */
+}
+
+.player.correct {
+  border-color: #4caf50;
+  background-color: #e8f5e9;
+}
+
+.player.incorrect {
+  border-color: #f44336;
+  background-color: #ffebee;
+}
+
+.prediction-input label {
+  margin: 0 5px;
+  cursor: pointer;
+}
+
+.result-display p {
+  margin: 5px 0;
+}
+
+.result-display .correct-text {
+  color: #4caf50;
+  font-weight: bold;
+}
+
+/* Specific styling for card-list within player section for 2x2 grid */
+.player .card-list {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr); /* 2 columns */
+  gap: 5px; /* Small gap between cards */
+  place-items: center; /* Center cards within their grid cells (both axes) */
+  margin-bottom: 10px; /* Keep some margin below the cards */
+  width: 155px; /* Calculated width for 2x2 cards */
+  height: 215px; /* Calculated height for 2x2 cards */
+}
+
+/* Back of card styling */
+.card-component.back-card {
+  background-color: #333; /* Dark grey background */
+  border: 1px solid #555;
+  color: transparent; /* Hide rank/suit text */
+  position: relative;
+  overflow: hidden;
+}
+
+.card-component.back-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: repeating-linear-gradient(
+    45deg,
+    #444,
+    #444 10px,
+    #555 10px,
+    #555 20px
+  ); /* Simple diagonal stripe pattern */
+  opacity: 0.7;
+}
+
+/* General game button style */
+.game-button {
+  padding: 12px 25px;
+  font-size: 1.2em;
+  cursor: pointer;
+  border: none;
+  border-radius: 6px;
+  background-color: #1877f2;
+  color: white;
+  transition: background-color 0.3s;
+}
+
+.game-button:hover {
+  background-color: #166fe5;
+}
+
+/* Prediction controls and buttons */
+.prediction-controls {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 20px; /* Space between buttons and actions */
+  margin-bottom: 10px; /* Reduced margin for closer placement */
+}
+
+.prediction-buttons {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+.prediction-buttons span {
+  font-size: 1.1em;
+  font-weight: bold;
+  color: #555;
+}
+
+.prediction-button {
+  padding: 8px 15px;
+  font-size: 1em;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  background-color: #f0f0f0;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.prediction-button:hover {
+  background-color: #e0e0e0;
+  border-color: #999;
+}
+
+.prediction-button.selected {
+  background-color: #1877f2; /* Blue for selected */
+  color: white;
+  border-color: #1877f2;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+}
+
+.prediction-button.selected:hover {
+  background-color: #166fe5;
+  border-color: #166fe5;
+}
+
+.actions {
+  text-align: center;
+  margin-top: 20px;
+  padding-top: 10px;
+  border-top: 1px solid #eee;
+}
+
+/* The actions-button now inherits from .game-button */
+.actions-button {
+  padding: 10px 20px;
+  font-size: 1.1em;
+}
+
+/* Responsive adjustments for smartphone */
+@media (max-width: 768px) {
+  .app {
+    padding: 10px;
+  }
+
+  header h1 {
+    font-size: 1.5em;
+  }
+
+  .community-cards-area .card-list .card-component {
+    transform: scale(1.2); /* Slightly smaller on mobile */
+  }
+
+  .players-area {
+    flex-direction: column; /* Stack players vertically */
+    align-items: center; /* Center players horizontally */
+    margin-top: 20px; /* Adjust margin */
+  }
+
+  .player {
+    max-width: 90%; /* Allow players to take more width */
+    margin: 10px 0; /* Vertical spacing */
+  }
+
+  .actions button {
+    font-size: 1em;
+    padding: 10px 20px;
+  }
+
+  .prediction-controls {
+    flex-direction: column; /* Stack vertically on mobile */
+    gap: 15px;
+  }
+
+  .prediction-buttons {
+    flex-wrap: wrap; /* Allow buttons to wrap */
+    justify-content: center;
+  }
+
+  .prediction-button {
+    padding: 6px 12px;
+    font-size: 0.9em;
+  }
+}

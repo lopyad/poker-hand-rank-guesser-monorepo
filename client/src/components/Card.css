@@ -1,0 +1,41 @@
+.card-component {
+  display: inline-flex;
+  flex-direction: column;
+  justify-content: space-between;
+  width: 60px;
+  height: 90px;
+  padding: 5px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  background-color: white;
+  font-size: 18px;
+  font-weight: bold;
+  box-shadow: 2px 2px 5px rgba(0,0,0,0.1);
+  margin: 4px;
+  user-select: none;
+}
+
+.card-component.hearts {
+  color: red;
+}
+
+.card-component.diamonds {
+  color: orange;
+}
+
+.card-component.spades {
+  color: black;
+}
+
+.card-component.clubs {
+  color: #004d40; /* Dark Teal */
+}
+
+.card-component .rank {
+  align-self: flex-start;
+}
+
+.card-component .suit {
+  align-self: flex-end;
+  font-size: 24px;
+}
