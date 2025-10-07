@@ -119,3 +119,11 @@
 .game-button:hover {
   background-color: #166fe5;
 }
+
+/* Responsive adjustments for smartphone */
+@media (max-width: 768px) {
+  .multigame-container h1 {
+    font-size: 1em; /* Make h1 the size of a p tag on mobile */
+    margin-bottom: 15px;
+  }
+}

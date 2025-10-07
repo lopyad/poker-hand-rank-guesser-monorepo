@@ -38,14 +38,14 @@ main {
   flex: 1; /* Main content takes available space */
   display: flex;
   flex-direction: column;
-  justify-content: center; /* Center community cards vertically */
+  justify-content: space-around; /* Distribute space instead of just centering */
   align-items: center; /* Center community cards horizontally */
 }
 
 .community-cards-area {
-  margin-bottom: 40px; /* Increased margin for spacing */
+  margin-bottom: 20px; /* Consistent margin */
   text-align: center;
-  flex: 1; /* Make it take up available space */
+  /* flex: 1;  <- REMOVED: This was likely causing the overlap issue on mobile */
   display: flex; /* Make it a flex container */
   flex-direction: column; /* Stack children vertically */
   justify-content: center; /* Center content vertically */
@@ -58,9 +58,13 @@ main {
   margin-bottom: 15px;
 }
 
+.community-cards-area .card-list {
+  font-size: 1.8rem; /* Control card size via font */
+}
+
 .community-cards-area .card-list .card-component {
-  transform: scale(2.0); /* Make community cards larger */
-  margin: 0 40px; /* Increased margin for spacing */
+  /* transform: scale(2.0); */ /* Replaced by font-size */
+  margin: 0 10px; /* Adjust margin for new size */
 }
 
 .players-area {
@@ -248,22 +252,43 @@ main {
   }
 
   header h1 {
-    font-size: 1.5em;
+    font-size: 1.1em;
+  }
+
+  .community-cards-area {
+    margin-bottom: 20px;
+  }
+
+  .community-cards-area .card-list {
+    font-size: 0.85rem; /* Equalize card sizes */
   }
 
   .community-cards-area .card-list .card-component {
-    transform: scale(1.2); /* Slightly smaller on mobile */
+    margin: 0 5px;
   }
 
   .players-area {
-    flex-direction: column; /* Stack players vertically */
-    align-items: center; /* Center players horizontally */
-    margin-top: 20px; /* Adjust margin */
+    flex-direction: column;
+    align-items: center;
+    margin-top: 20px;
   }
 
   .player {
-    max-width: 90%; /* Allow players to take more width */
-    margin: 10px 0; /* Vertical spacing */
+    max-width: 90%;
+    min-width: 280px;
+    margin: 10px 0;
+  }
+
+  .player .card-list {
+    font-size: 0.85rem; /* Equalize card sizes */
+    justify-content: center;
+    grid-template-columns: repeat(2, auto);
+    width: auto;
+    height: auto;
+  }
+
+  .result-display p {
+    font-size: 0.9em;
   }
 
   .actions button {
@@ -274,15 +299,16 @@ main {
   .prediction-controls {
     flex-direction: column; /* Stack vertically on mobile */
     gap: 15px;
+    margin-top: 20px; /* Add space above prediction controls */
   }
 
   .prediction-buttons {
-    flex-wrap: wrap; /* Allow buttons to wrap */
+    flex-wrap: wrap;
     justify-content: center;
   }
 
   .prediction-button {
-    padding: 6px 12px;
-    font-size: 0.9em;
+    padding: 8px 15px;
+    font-size: 1em;
   }
 }

@@ -22,6 +22,10 @@ const Lobby: React.FC = () => {
     navigate('/setup');
   };
 
+  const handleLogin = () => {
+    navigate('/login');
+  };
+
   return (
     <div className="lobby-container">
       <h1 className="game-title">poker-hand-rank-guesser</h1>
@@ -32,6 +36,9 @@ const Lobby: React.FC = () => {
       </div>
       <button className="start-button" onClick={handleStartGame}>
         Game Start
+      </button>
+      <button className="login-button" onClick={handleLogin}>
+        Login
       </button>
     </div>
   );

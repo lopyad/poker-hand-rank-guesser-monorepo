@@ -6,6 +6,7 @@ export const sendIdTokenToBackend = async (idToken: string, backendUrl: string):
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
+        'ngrok-skip-browser-warning': 'true',
       },
       body: JSON.stringify({ idToken }),
     });
@@ -29,6 +30,7 @@ export const fetchUserName = async (idToken: string, backendUrl: string): Promis
       headers: {
         'Authorization': `Bearer ${idToken}`,
         'Content-Type': 'application/json',
+        'ngrok-skip-browser-warning': 'true',
       },
     });
     if (response.ok) {

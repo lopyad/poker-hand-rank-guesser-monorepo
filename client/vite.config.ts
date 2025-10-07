@@ -6,13 +6,13 @@ import path from 'path'
 export default defineConfig({
   plugins: [react()],
   server: {
-    proxy: {
-      '/api': {
-        target: 'http://localhost:3000', 
-        changeOrigin: true, 
-        // rewrite: (path) => path.replace(/^\/api/, ''), 
-      }
-    },
+    // proxy: {
+    //   '/api': {
+    //     target: 'http://localhost:3000', 
+    //     changeOrigin: true, 
+    //     // rewrite: (path) => path.replace(/^\/api/, ''), 
+    //   }
+    // },
     allowedHosts: [
       "nonindexed-unprophetically-alysia.ngrok-free.dev"
     ]

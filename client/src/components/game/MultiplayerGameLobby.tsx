@@ -26,7 +26,7 @@ const MultiplayerGameLobby: React.FC<MultiplayerGameLobbyProps> = ({
   handleGetRoomCode,
   handleJoinRoomManually,
   setManualRoomCode,
-  setPhase,
+  // setPhase,
   players,
   onPlayerReadyToggle,
 }) => {

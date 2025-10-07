@@ -2,13 +2,13 @@
   display: inline-flex;
   flex-direction: column;
   justify-content: space-between;
-  width: 60px;
-  height: 90px;
-  padding: 5px;
+  width: 5em;
+  height: 7em;
+  padding: 0.4em;
   border: 1px solid #ccc;
   border-radius: 6px;
   background-color: white;
-  font-size: 18px;
+  font-size: 1rem; /* Base font size for scaling */
   font-weight: bold;
   box-shadow: 2px 2px 5px rgba(0,0,0,0.1);
   margin: 4px;
@@ -33,9 +33,10 @@
 
 .card-component .rank {
   align-self: flex-start;
+  font-size: 1.2em;
 }
 
 .card-component .suit {
   align-self: flex-end;
-  font-size: 24px;
+  font-size: 1.5em;
 }
